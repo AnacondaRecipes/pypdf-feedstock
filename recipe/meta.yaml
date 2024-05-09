@@ -14,6 +14,7 @@ source:
 
 build:
   number: 0
+  script: cd dist && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  # [py<36]
 
 requirements:
@@ -25,8 +26,6 @@ requirements:
 outputs:
 
   - name: pypdf
-    build:
-      script: cd dist && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
     requirements:
       host:
         - flit-core >=3.9,<4
@@ -34,7 +33,7 @@ outputs:
         - python
       run:
         - python
-        - typing_extensions >=4.0
+        - typing_extensions >=4.0  # [py<311]
     test: &simple-test
       imports:
         - pypdf
