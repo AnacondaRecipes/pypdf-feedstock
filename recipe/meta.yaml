@@ -44,8 +44,6 @@ outputs:
         - pip
 
   - name: pypdf-with-crypto
-    build: &noarch-generic
-      noarch: generic
     requirements:
       run:
         - {{ pin_subpackage("pypdf", exact=True) }}
@@ -53,7 +51,6 @@ outputs:
     test: *simple-test
 
   - name: pypdf-with-image
-    build: *noarch-generic
     requirements:
       run:
         - {{ pin_subpackage("pypdf", exact=True) }}
@@ -61,7 +58,6 @@ outputs:
     test: *simple-test
 
   - name: pypdf-with-full
-    build: *noarch-generic
     requirements:
       run:
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
@@ -70,7 +66,6 @@ outputs:
     test: *simple-test
 
   - name: _pypdf-with-full-tests
-    build: *noarch-generic
     requirements:
       run:
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
