@@ -15,12 +15,6 @@ source:
 build:
   number: 0
 
-requirements:
-  host:
-    - python
-    - pip
-    - flit-core >=3.9,<4
-
 outputs:
   - name: pypdf
     build:
@@ -51,6 +45,7 @@ outputs:
         - flit-core >=3.9,<4
         - pip
       run:
+        - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - cryptography
     test: *simple-test
@@ -64,6 +59,7 @@ outputs:
         - flit-core >=3.9,<4
         - pip
       run:
+        - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - pillow >=8.0.0
     test: *simple-test
@@ -77,6 +73,7 @@ outputs:
         - flit-core >=3.9,<4
         - pip
       run:
+        - python
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
         - {{ pin_subpackage("pypdf", exact=True) }}
