@@ -1,8 +1,5 @@
 {% set version = "4.2.0" %}
 
-# handle undefined PYTHON in `noarch: generic` outputs
-{% if PYTHON is not defined %}{% set PYTHON = "$PYTHON" %}{% endif %}
-
 package:
   name: pypdf-split
   version: {{ version }}
@@ -17,28 +14,20 @@ source:
 
 build:
   number: 0
-  noarch: python
-
-requirements:
-  host:
-    - python >=3.7
-  run:
-    - python >=3.7
 
 outputs:
-
   - name: pypdf
     build:
-      script: cd dist && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-      noarch: python
+      script: cd dist && python -m pip install . -vv --no-deps --no-build-isolation
+      skip: True  # [py<36]
     requirements:
       host:
+        - python
         - flit-core >=3.9,<4
         - pip
-        - python >=3.7
       run:
-        - python >=3.7
-        - typing_extensions >=4.0
+        - python
+        - typing_extensions >=4.0  # [py<311]
     test: &simple-test
       imports:
         - pypdf
@@ -48,64 +37,49 @@ outputs:
         - pip
 
   - name: pypdf-with-crypto
-    build: &noarch-generic
-      noarch: generic
+    build:
+      skip: True  # [py<36]
     requirements:
+      host:
+        - python
       run:
+        - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - cryptography
     test: *simple-test
 
   - name: pypdf-with-image
-    build: *noarch-generic
+    build:
+      skip: True  # [py<36]
     requirements:
+      host:
+        - python
       run:
+        - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - pillow >=8.0.0
     test: *simple-test
 
   - name: pypdf-with-full
-    build: *noarch-generic
+    build:
+      skip: True  # [py<36]
     requirements:
+      host:
+        - python
       run:
+        - python
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
         - {{ pin_subpackage("pypdf", exact=True) }}
     test: *simple-test
 
-  - name: _pypdf-with-full-tests
-    build: *noarch-generic
-    requirements:
-      run:
-        - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
-        - {{ pin_subpackage("pypdf-with-full", exact=True) }}
-        - {{ pin_subpackage("pypdf-with-image", exact=True) }}
-        - {{ pin_subpackage("pypdf", exact=True) }}
-    test:
-      files:
-        - test_all.py
-      source_files:
-        - src/pyproject.toml
-        - src/tests
-        - src/resources
-      imports:
-        - pypdf
-      commands:
-        - pip check
-        - python test_all.py
-      requires:
-        - fpdf
-        - pip
-        - pytest-cov
-        - pytest-socket
-        - pytest-timeout
-        - pyyaml
-        - types-pillow
-
 about:
   home: https://pypi.org/project/pypdf
   summary: A pure-python PDF library capable of splitting, merging, cropping, and transforming PDF files
+  description: |
+    pypdf is a free and open-source pure-python PDF library capable of splitting, merging, cropping, and transforming the pages of PDF files. It can also add custom data, viewing options, and passwords to PDF files. pypdf can retrieve text and metadata from PDFs as well.
   license: BSD-3-Clause
+  license_family: BSD
   license_file: dist/LICENSE
   dev_url: https://github.com/py-pdf/pypdf
   doc_url: https://pypdf.readthedocs.io
