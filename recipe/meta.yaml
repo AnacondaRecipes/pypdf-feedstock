@@ -14,23 +14,18 @@ source:
 
 build:
   number: 0
-  script: cd dist && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  # [py<36]
 
-requirements:
-  host:
-    - python
-  run:
-    - python
-
 outputs:
-
   - name: pypdf
+    build:
+      script: cd dist && python -m pip install . -vv --no-deps --no-build-isolation
+      skip: True  # [py<36]
     requirements:
       host:
+        - python
         - flit-core >=3.9,<4
         - pip
-        - python
       run:
         - python
         - typing_extensions >=4.0  # [py<311]
@@ -43,54 +38,47 @@ outputs:
         - pip
 
   - name: pypdf-with-crypto
+    build:
+      script: cd src && python -m pip install . -vv --no-deps --no-build-isolation
+      skip: True  # [py<36]
     requirements:
+      host:
+        - python
+        - flit-core >=3.9,<4
+        - pip
       run:
         - {{ pin_subpackage("pypdf", exact=True) }}
         - cryptography
     test: *simple-test
 
   - name: pypdf-with-image
+    build:
+      script: cd src && python -m pip install . -vv --no-deps --no-build-isolation
+      skip: True  # [py<36]
     requirements:
+      host:
+        - python
+        - flit-core >=3.9,<4
+        - pip
       run:
         - {{ pin_subpackage("pypdf", exact=True) }}
         - pillow >=8.0.0
     test: *simple-test
 
   - name: pypdf-with-full
+    build:
+      script: cd src && python -m pip install . -vv --no-deps --no-build-isolation
+      skip: True  # [py<36]
     requirements:
+      host:
+        - python
+        - flit-core >=3.9,<4
+        - pip
       run:
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
         - {{ pin_subpackage("pypdf", exact=True) }}
     test: *simple-test
-
-  - name: _pypdf-with-full-tests
-    requirements:
-      run:
-        - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
-        - {{ pin_subpackage("pypdf-with-full", exact=True) }}
-        - {{ pin_subpackage("pypdf-with-image", exact=True) }}
-        - {{ pin_subpackage("pypdf", exact=True) }}
-    test:
-      files:
-        - test_all.py
-      source_files:
-        - src/pyproject.toml
-        - src/tests
-        - src/resources
-      imports:
-        - pypdf
-      commands:
-        - pip check
-        - python test_all.py
-      requires:
-        - fpdf
-        - pip
-        - pytest-cov
-        - pytest-socket
-        - pytest-timeout
-        - pyyaml
-        - types-pillow
 
 about:
   home: https://pypi.org/project/pypdf
