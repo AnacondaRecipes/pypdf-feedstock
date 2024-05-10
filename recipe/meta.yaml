@@ -14,7 +14,12 @@ source:
 
 build:
   number: 0
-  skip: True  # [py<36]
+
+requirements:
+  host:
+    - python
+    - pip
+    - flit-core >=3.9,<4
 
 outputs:
   - name: pypdf
@@ -39,7 +44,6 @@ outputs:
 
   - name: pypdf-with-crypto
     build:
-      script: cd src && python -m pip install . -vv --no-deps --no-build-isolation
       skip: True  # [py<36]
     requirements:
       host:
@@ -53,7 +57,6 @@ outputs:
 
   - name: pypdf-with-image
     build:
-      script: cd src && python -m pip install . -vv --no-deps --no-build-isolation
       skip: True  # [py<36]
     requirements:
       host:
@@ -67,7 +70,6 @@ outputs:
 
   - name: pypdf-with-full
     build:
-      script: cd src && python -m pip install . -vv --no-deps --no-build-isolation
       skip: True  # [py<36]
     requirements:
       host:
