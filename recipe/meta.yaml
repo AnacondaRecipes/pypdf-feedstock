@@ -1,4 +1,4 @@
-{% set version = "4.2.0" %}
+{% set version = "6.0.0" %}
 
 package:
   name: pypdf-split
@@ -7,10 +7,10 @@ package:
 source:
   - folder: dist
     url: https://pypi.io/packages/source/p/pypdf/pypdf-{{ version }}.tar.gz
-    sha256: fe63f3f7d1dcda1c9374421a94c1bba6c6f8c4a62173a59b64ffd52058f846b1
+    sha256: 282a99d2cc94a84a3a3159f0d9358c0af53f85b4d28d76ea38b96e9e5ac2a08d
   - folder: src
     url: https://github.com/py-pdf/pypdf/archive/refs/tags/{{ version }}.tar.gz
-    sha256: 4096459bdb19df0231360617f2266d8068a40b9eb202bbea9c54274a320f0c55
+    sha256: feca8b75cea9bbdecfb51c94c05118323495988fbb3e1f93bd0add7a00f66207
 
 build:
   number: 0
@@ -19,11 +19,11 @@ outputs:
   - name: pypdf
     build:
       script: cd dist && python -m pip install . -vv --no-deps --no-build-isolation
-      skip: True  # [py<36]
+      skip: True  # [py<39]
     requirements:
       host:
         - python
-        - flit-core >=3.9,<4
+        - flit-core >=3.11,<4
         - pip
       run:
         - python
