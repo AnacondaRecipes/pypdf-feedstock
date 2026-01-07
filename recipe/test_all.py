@@ -32,6 +32,9 @@ K_SKIPS = [
     "read_unknown_zero_pages",
     # https://github.com/conda-forge/pypdf-feedstock/pull/46
     "calling_indirect_objects",
+    # https://github.com/conda-forge/pypdf-feedstock/pull/50
+    "writer_xmp_metadata_samples",
+    "increment_writer",
 ]
 
 PYTEST_ARGS = [
