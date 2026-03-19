@@ -1,0 +1,9 @@
+anaconda_config_version: 1
+upstream_sources:
+  - pypi:
+      identifier: pypdf
+    packages:
+      - pypdf
+      - pypdf-with-crypto
+      - pypdf-with-full
+      - pypdf-with-image
