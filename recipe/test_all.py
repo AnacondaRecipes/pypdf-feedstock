@@ -6,8 +6,7 @@ COV_FAIL_UNDER = 80
 UTF8 = dict(encoding="utf-8")
 
 HERE = Path(__file__).parent
-SRC = HERE / "src"
-PYPROJECT_TOML = SRC / "pyproject.toml"
+PYPROJECT_TOML = HERE / "pyproject.toml"
 
 OR_JOIN = " or ".join
 # mostly to avoid external assets
@@ -60,7 +59,7 @@ CLOBBER = [
 ]
 
 if __name__ == "__main__":
-    [(SRC / clobber).unlink() for clobber in CLOBBER]
+    [(HERE / clobber).unlink() for clobber in CLOBBER]
     print(">>> ", "\t".join(PYTEST_ARGS), flush=True)
-    rc = subprocess.call(PYTEST_ARGS, cwd=str(SRC))
+    rc = subprocess.call(PYTEST_ARGS, cwd=str(HERE))
     sys.exit(rc)
