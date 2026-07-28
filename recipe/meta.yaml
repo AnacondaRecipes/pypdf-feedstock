@@ -1,25 +1,22 @@
-{% set version = "6.8.0" %}
+{% set name = "pypdf" %}
+{% set version = "6.14.2" %}
 
 package:
-  name: pypdf-split
+  name: {{ name }}-split
   version: {{ version }}
 
 source:
-  - folder: dist
-    url: https://pypi.io/packages/source/p/pypdf/pypdf-{{ version }}.tar.gz
-    sha256: cb7eaeaa4133ce76f762184069a854e03f4d9a08568f0e0623f7ea810407833b
-  - folder: src
-    url: https://github.com/py-pdf/pypdf/archive/refs/tags/{{ version }}.tar.gz
-    sha256: fd86950620d59e9b8580355321a394e93488b2951725e1c38d26d2061a20dd2b
+    url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 7873f502fe4385e79539b21d872392dc0c4e3714327c15881cbc7fbfd1f95b25
 
 build:
   number: 0
 
 outputs:
-  - name: pypdf
+  - name: {{ name }}
     build:
-      script: cd dist && python -m pip install . -vv --no-deps --no-build-isolation
-      skip: True  # [py<39]
+      script: python -m pip install . -vv --no-deps --no-build-isolation
+      skip: true  # [py<39]
     requirements:
       host:
         - python
@@ -29,28 +26,42 @@ outputs:
         - python
         - typing_extensions >=4.0  # [py<311]
     test: &simple-test
+      source_files:
+        - tests
+        - resources
+      files:
+        - test_all.py
       imports:
         - pypdf
       commands:
         - pip check
+        # we need to ignore test_all.py because it is not a test file
+        - set "PYTEST_ADDOPTS=--ignore=test_all.py"  # [win]
+        - python test_all.py                          # [win]
+        - PYTEST_ADDOPTS="--ignore=test_all.py" python test_all.py  # [not win]
       requires:
         - pip
+        - pytest
+        - pytest-cov
+        - pyyaml
+        - pillow
+        - fonttools
 
-  - name: pypdf-with-crypto
+  - name: {{ name }}-with-crypto
     build:
-      skip: True  # [py<36]
+      skip: true  # [py<39]
     requirements:
       host:
         - python
       run:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
-        - cryptography
+        - cryptography >=3.0
     test: *simple-test
 
-  - name: pypdf-with-image
+  - name: {{ name }}-with-image
     build:
-      skip: True  # [py<36]
+      skip: true  # [py<39]
     requirements:
       host:
         - python
@@ -60,9 +71,9 @@ outputs:
         - pillow >=8.0.0
     test: *simple-test
 
-  - name: pypdf-with-full
+  - name: {{ name }}-with-full
     build:
-      skip: True  # [py<36]
+      skip: true  # [py<39]
     requirements:
       host:
         - python
@@ -80,7 +91,7 @@ about:
     pypdf is a free and open-source pure-python PDF library capable of splitting, merging, cropping, and transforming the pages of PDF files. It can also add custom data, viewing options, and passwords to PDF files. pypdf can retrieve text and metadata from PDFs as well.
   license: BSD-3-Clause
   license_family: BSD
-  license_file: dist/LICENSE
+  license_file: LICENSE
   dev_url: https://github.com/py-pdf/pypdf
   doc_url: https://pypdf.readthedocs.io
 
