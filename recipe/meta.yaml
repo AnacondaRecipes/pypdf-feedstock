@@ -36,7 +36,9 @@ outputs:
       commands:
         - pip check
         # we need to ignore test_all.py because it is not a test file
-        - PYTEST_ADDOPTS="--ignore=test_all.py" python test_all.py
+        - set "PYTEST_ADDOPTS=--ignore=test_all.py"  # [win]
+        - python test_all.py                          # [win]
+        - PYTEST_ADDOPTS="--ignore=test_all.py" python test_all.py  # [not win]
       requires:
         - pip
         - pytest
