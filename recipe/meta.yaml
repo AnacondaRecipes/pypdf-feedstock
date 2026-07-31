@@ -1,16 +1,17 @@
-{% set version = "4.2.0" %}
+{% set name = "pypdf" %}
+{% set version = "5.9.0" %}
 
 package:
-  name: pypdf-split
+  name: {{ name }}-split
   version: {{ version }}
 
 source:
   - folder: dist
-    url: https://pypi.io/packages/source/p/pypdf/pypdf-{{ version }}.tar.gz
-    sha256: fe63f3f7d1dcda1c9374421a94c1bba6c6f8c4a62173a59b64ffd52058f846b1
+    url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 30f67a614d558e495e1fbb157ba58c1de91ffc1718f5e0dfeb82a029233890a1
   - folder: src
-    url: https://github.com/py-pdf/pypdf/archive/refs/tags/{{ version }}.tar.gz
-    sha256: 4096459bdb19df0231360617f2266d8068a40b9eb202bbea9c54274a320f0c55
+    url: https://github.com/py-pdf/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+    sha256: 124be28cc4dc1a9d7e160b5bf5a87b3ba8ec5a438a054918fda4076c73ba511f
 
 build:
   number: 0
@@ -19,11 +20,11 @@ outputs:
   - name: pypdf
     build:
       script: cd dist && python -m pip install . -vv --no-deps --no-build-isolation
-      skip: True  # [py<36]
+      skip: true  # [py<38]
     requirements:
       host:
         - python
-        - flit-core >=3.9,<4
+        - flit-core >=3.11,<4
         - pip
       run:
         - python
@@ -38,7 +39,7 @@ outputs:
 
   - name: pypdf-with-crypto
     build:
-      skip: True  # [py<36]
+      skip: true  # [py<38]
     requirements:
       host:
         - python
@@ -50,7 +51,7 @@ outputs:
 
   - name: pypdf-with-image
     build:
-      skip: True  # [py<36]
+      skip: true  # [py<38]
     requirements:
       host:
         - python
@@ -62,7 +63,7 @@ outputs:
 
   - name: pypdf-with-full
     build:
-      skip: True  # [py<36]
+      skip: true  # [py<38]
     requirements:
       host:
         - python
