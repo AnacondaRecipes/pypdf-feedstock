@@ -34,6 +34,8 @@ K_SKIPS = [
     # https://github.com/conda-forge/pypdf-feedstock/pull/50
     "writer_xmp_metadata_samples",
     "increment_writer",
+    # 6.15.0 RTL appearance streams need arabic-reshaper + python-bidi (not on defaults)
+    "appearance_stream_rtl",
 ]
 
 PYTEST_ARGS = [
