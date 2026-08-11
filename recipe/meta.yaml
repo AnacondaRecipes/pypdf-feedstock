@@ -82,6 +82,8 @@ outputs:
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
         - {{ pin_subpackage("pypdf", exact=True) }}
+        # Upstream full extra also lists arabic-reshaper (not on defaults yet)
+        - python-bidi
     test: *simple-test
 
 about:
