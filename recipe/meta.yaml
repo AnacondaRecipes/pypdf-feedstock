@@ -46,6 +46,8 @@ outputs:
         - pyyaml
         - pillow
         - fonttools
+        - python-bidi
+        - arabic-reshaper  # [py>=310]
 
   - name: {{ name }}-with-crypto
     build:
@@ -71,6 +73,32 @@ outputs:
         - pillow >=8.0.0
     test: *simple-test
 
+  - name: {{ name }}-with-fonts
+    build:
+      skip: true  # [py<39]
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("pypdf", exact=True) }}
+        - fonttools
+    test: *simple-test
+
+  # arabic-reshaper requires Python >=3.10 (not built for py39)
+  - name: {{ name }}-with-rtl-text
+    build:
+      skip: true  # [py<310]
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("pypdf", exact=True) }}
+        - arabic-reshaper
+        - python-bidi
+    test: *simple-test
+
   - name: {{ name }}-with-full
     build:
       skip: true  # [py<39]
@@ -81,9 +109,9 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
+        - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
+        - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
-        # Upstream full extra also lists arabic-reshaper (not on defaults yet)
-        - python-bidi
     test: *simple-test
 
 about:

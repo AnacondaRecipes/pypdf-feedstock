@@ -34,9 +34,14 @@ K_SKIPS = [
     # https://github.com/conda-forge/pypdf-feedstock/pull/50
     "writer_xmp_metadata_samples",
     "increment_writer",
-    # 6.15.0 RTL appearance streams need arabic-reshaper + python-bidi (not on defaults)
-    "appearance_stream_rtl",
 ]
+
+# appearance_stream_rtl needs arabic-reshaper (py>=3.10; staging until on defaults)
+try:
+    import arabic_reshaper  # noqa: F401
+    import bidi  # noqa: F401
+except ImportError:
+    K_SKIPS.append("appearance_stream_rtl")
 
 PYTEST_ARGS = [
     sys.executable,

@@ -5,5 +5,7 @@ upstream_sources:
     packages:
       - pypdf
       - pypdf-with-crypto
+      - pypdf-with-fonts
       - pypdf-with-full
       - pypdf-with-image
+      - pypdf-with-rtl-text
