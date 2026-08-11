@@ -47,7 +47,8 @@ outputs:
         - pillow
         - fonttools
         - python-bidi
-        - arabic-reshaper  # [py>=310]
+        # Anaconda package name uses underscore (arabic_reshaper-feedstock), not PyPI hyphen
+        - arabic_reshaper  # [py>=310]
 
   - name: {{ name }}-with-crypto
     build:
@@ -85,7 +86,7 @@ outputs:
         - fonttools
     test: *simple-test
 
-  # arabic-reshaper requires Python >=3.10 (not built for py39)
+  # arabic_reshaper (underscore — AnacondaRecipes/arabic_reshaper-feedstock) needs py>=3.10
   - name: {{ name }}-with-rtl-text
     build:
       skip: true  # [py<310]
@@ -95,7 +96,8 @@ outputs:
       run:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
-        - arabic-reshaper
+        # conda package is arabic_reshaper (underscore), not arabic-reshaper
+        - arabic_reshaper
         - python-bidi
     test: *simple-test
 

@@ -36,7 +36,7 @@ K_SKIPS = [
     "increment_writer",
 ]
 
-# appearance_stream_rtl needs arabic-reshaper (py>=3.10; staging until on defaults)
+# appearance_stream_rtl needs arabic_reshaper (conda underscore name) + python-bidi
 try:
     import arabic_reshaper  # noqa: F401
     import bidi  # noqa: F401
