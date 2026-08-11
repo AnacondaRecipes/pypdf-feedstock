@@ -1,13 +1,13 @@
 {% set name = "pypdf" %}
-{% set version = "6.14.2" %}
+{% set version = "6.15.0" %}
 
 package:
   name: {{ name }}-split
   version: {{ version }}
 
 source:
-    url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 7873f502fe4385e79539b21d872392dc0c4e3714327c15881cbc7fbfd1f95b25
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d39c4d955a76409284a905e2d65b40076d77ab76129e0faaeeb6612403ecfc79
 
 build:
   number: 0
@@ -46,6 +46,9 @@ outputs:
         - pyyaml
         - pillow
         - fonttools
+        - python-bidi
+        # Anaconda package name uses underscore (arabic_reshaper-feedstock), not PyPI hyphen
+        - arabic_reshaper  # [py>=310]
 
   - name: {{ name }}-with-crypto
     build:
@@ -71,6 +74,33 @@ outputs:
         - pillow >=8.0.0
     test: *simple-test
 
+  - name: {{ name }}-with-fonts
+    build:
+      skip: true  # [py<39]
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("pypdf", exact=True) }}
+        - fonttools
+    test: *simple-test
+
+  # arabic_reshaper (underscore — AnacondaRecipes/arabic_reshaper-feedstock) needs py>=3.10
+  - name: {{ name }}-with-rtl-text
+    build:
+      skip: true  # [py<310]
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("pypdf", exact=True) }}
+        # conda package is arabic_reshaper (underscore), not arabic-reshaper
+        - arabic_reshaper
+        - python-bidi
+    test: *simple-test
+
   - name: {{ name }}-with-full
     build:
       skip: true  # [py<39]
@@ -81,6 +111,8 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
+        - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
+        - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
     test: *simple-test
 
