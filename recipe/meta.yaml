@@ -1,13 +1,13 @@
 {% set name = "pypdf" %}
-{% set version = "6.15.0" %}
+{% set version = "6.16.2" %}
 
 package:
   name: {{ name }}-split
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: d39c4d955a76409284a905e2d65b40076d77ab76129e0faaeeb6612403ecfc79
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 595647f6191de6f402cfde1d0c455d6cbccbd509aac32b34783009c032de5d6e
 
 build:
   number: 0
@@ -20,7 +20,7 @@ outputs:
     requirements:
       host:
         - python
-        - flit-core >=3.11,<4
+        - flit-core >=3.11,<5
         - pip
       run:
         - python
