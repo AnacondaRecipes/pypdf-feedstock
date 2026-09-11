@@ -10,18 +10,22 @@ source:
   sha256: 595647f6191de6f402cfde1d0c455d6cbccbd509aac32b34783009c032de5d6e
 
 build:
-  number: 0
+  number: 1
 
 outputs:
   - name: {{ name }}
     build:
-      script: python -m pip install . -vv --no-deps --no-build-isolation
+      script:
+        # anaconda channel are failing our security scanner because they bundle encrypted (password‑protected) PDFs as test fixtures. The scanner unpacks each artifact and can't open an encrypted PDF, so it flags the whole package PASSWORD_PROTECTED and blocks it.
+        # pypdf's test suite ships under info/test/resources/, including ~11 encrypted PDFs (e.g. encryption/r2-r4-*.pdf, encrypted-file.pdf).
+        - rm -rf ${SRC_DIR}/resources/encryption ${SRC_DIR}/resources/encrypted-file.pdf ${SRC_DIR}/resources/encrypted_doc_no_id.pdf ${SRC_DIR}/resources/libreoffice-writer-password.pdf ${SRC_DIR}/resources/crazyones-encrypted-256.pdf
+        - python -m pip install . -vv --no-deps --no-build-isolation
       skip: true  # [py<39]
     requirements:
       host:
+        - pip
         - python
         - flit-core >=3.11,<5
-        - pip
       run:
         - python
         - typing_extensions >=4.0  # [py<311]
