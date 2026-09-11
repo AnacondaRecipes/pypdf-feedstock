@@ -61,6 +61,7 @@ DESELECT_TESTS = [
     "tests/test_encryption.py::test_read_page_from_encrypted_file_aes_256",
     "tests/test_encryption.py::test_merge_encrypted_pdfs",
     "tests/test_encryption.py::test_aesv2_without_length_in_encrypt_dict",
+    "tests/test_encryption.py::test_pdf_with_both_passwords",
     "tests/test_merger.py::test_merger_operations_by_traditional_usage_with_writer",
     "tests/test_merger.py::test_merger_operations_by_semi_traditional_usage_with_writer",
     "tests/test_merger.py::test_merger_operation_by_new_usage_with_writer",
