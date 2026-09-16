@@ -10,7 +10,7 @@ source:
   sha256: 595647f6191de6f402cfde1d0c455d6cbccbd509aac32b34783009c032de5d6e
 
 build:
-  number: 1
+  number: 2
 
 outputs:
   - name: {{ name }}
@@ -29,7 +29,7 @@ outputs:
       run:
         - python
         - typing_extensions >=4.0  # [py<311]
-    test: &simple-test
+    test:
       source_files:
         - tests
         - resources
@@ -64,7 +64,11 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - cryptography >=3.0
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   - name: {{ name }}-with-image
     build:
@@ -76,7 +80,11 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - pillow >=8.0.0
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   - name: {{ name }}-with-fonts
     build:
@@ -88,7 +96,11 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - fonttools
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   # arabic_reshaper (underscore — AnacondaRecipes/arabic_reshaper-feedstock) needs py>=3.10
   - name: {{ name }}-with-rtl-text
@@ -103,7 +115,11 @@ outputs:
         # conda package is arabic_reshaper (underscore), not arabic-reshaper
         - arabic_reshaper
         - python-bidi
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   - name: {{ name }}-with-full
     build:
@@ -118,7 +134,11 @@ outputs:
         - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
         - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
 about:
   home: https://pypi.org/project/pypdf
