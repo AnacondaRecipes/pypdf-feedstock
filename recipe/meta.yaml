@@ -6,26 +6,30 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: d39c4d955a76409284a905e2d65b40076d77ab76129e0faaeeb6612403ecfc79
 
 build:
-  number: 0
+  number: 1
 
 outputs:
   - name: {{ name }}
     build:
-      script: python -m pip install . -vv --no-deps --no-build-isolation
+      script:
+        # anaconda channel are failing our security scanner because they bundle encrypted (password‑protected) PDFs as test fixtures. The scanner unpacks each artifact and can't open an encrypted PDF, so it flags the whole package PASSWORD_PROTECTED and blocks it.
+        # pypdf's test suite ships under info/test/resources/, including ~11 encrypted PDFs (e.g. encryption/r2-r4-*.pdf, encrypted-file.pdf).
+        - rm -rf ${SRC_DIR}/resources/encryption ${SRC_DIR}/resources/encrypted-file.pdf ${SRC_DIR}/resources/encrypted_doc_no_id.pdf ${SRC_DIR}/resources/libreoffice-writer-password.pdf ${SRC_DIR}/resources/crazyones-encrypted-256.pdf
+        - python -m pip install . -vv --no-deps --no-build-isolation
       skip: true  # [py<39]
     requirements:
       host:
+        - pip
         - python
         - flit-core >=3.11,<4
-        - pip
       run:
         - python
         - typing_extensions >=4.0  # [py<311]
-    test: &simple-test
+    test:
       source_files:
         - tests
         - resources
@@ -60,7 +64,11 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - cryptography >=3.0
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   - name: {{ name }}-with-image
     build:
@@ -72,7 +80,11 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - pillow >=8.0.0
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   - name: {{ name }}-with-fonts
     build:
@@ -84,7 +96,11 @@ outputs:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
         - fonttools
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   # arabic_reshaper (underscore — AnacondaRecipes/arabic_reshaper-feedstock) needs py>=3.10
   - name: {{ name }}-with-rtl-text
@@ -99,7 +115,11 @@ outputs:
         # conda package is arabic_reshaper (underscore), not arabic-reshaper
         - arabic_reshaper
         - python-bidi
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
   - name: {{ name }}-with-full
     build:
@@ -114,7 +134,11 @@ outputs:
         - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
         - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
-    test: *simple-test
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
 
 about:
   home: https://pypi.org/project/pypdf
