@@ -1,5 +1,5 @@
 {% set name = "pypdf" %}
-{% set version = "6.16.2" %}
+{% set version = "6.19.0" %}
 
 package:
   name: {{ name }}-split
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 595647f6191de6f402cfde1d0c455d6cbccbd509aac32b34783009c032de5d6e
+  sha256: bbc43aca292369ccc6cbc8a921991ecf2538a3587ab5a116eff06c321d647155
 
 build:
-  number: 2
+  number: 0
 
 outputs:
   - name: {{ name }}
