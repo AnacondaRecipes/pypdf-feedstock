@@ -1,5 +1,5 @@
 {% set name = "pypdf" %}
-{% set version = "6.19.0" %}
+{% set version = "6.21.2" %}
 
 package:
   name: {{ name }}-split
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: bbc43aca292369ccc6cbc8a921991ecf2538a3587ab5a116eff06c321d647155
+  sha256: 0a3e1c5c886a1be03646c16a04827cc166c2a0575c971b26a4bf89686551c2d4
 
 build:
   number: 0
@@ -18,7 +18,8 @@ outputs:
       script:
         # anaconda channel are failing our security scanner because they bundle encrypted (password‑protected) PDFs as test fixtures. The scanner unpacks each artifact and can't open an encrypted PDF, so it flags the whole package PASSWORD_PROTECTED and blocks it.
         # pypdf's test suite ships under info/test/resources/, including ~11 encrypted PDFs (e.g. encryption/r2-r4-*.pdf, encrypted-file.pdf).
-        - rm -rf ${SRC_DIR}/resources/encryption ${SRC_DIR}/resources/encrypted-file.pdf ${SRC_DIR}/resources/encrypted_doc_no_id.pdf ${SRC_DIR}/resources/libreoffice-writer-password.pdf ${SRC_DIR}/resources/crazyones-encrypted-256.pdf
+        # python, not rm: Windows cmd has no rm, so the fixtures were still packaged on win-64.
+        - python -c "import os, shutil; from pathlib import Path; r=Path(os.environ['SRC_DIR'])/'resources'; shutil.rmtree(r/'encryption', ignore_errors=True); [(r/n).unlink(missing_ok=True) for n in ('encrypted-file.pdf','encrypted_doc_no_id.pdf','libreoffice-writer-password.pdf','crazyones-encrypted-256.pdf')]"
         - python -m pip install . -vv --no-deps --no-build-isolation
       skip: true  # [py<39]
     requirements:
@@ -134,6 +135,7 @@ outputs:
         - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
         - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
+        - brotli-python >=1.2.0
     test:
       commands:
         - pip check

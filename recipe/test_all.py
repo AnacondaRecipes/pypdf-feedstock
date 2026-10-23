@@ -73,6 +73,16 @@ DESELECT_TESTS = [
     "tests/test_reader.py::test_wrong_password_error",
     "tests/test_workflows.py::test_decrypt",
     "tests/test_workflows.py::test_text_extraction_encrypted",
+    # 6.21.2 opens resources/encryption/r2-user-password.pdf and
+    # r4-user-password.pdf. The build script removes those fixtures.
+    "tests/test_encryption.py::test_malformed_encryption_dictionary",
+    "tests/test_encryption.py::test_crypt_filter_without_cfm_is_unsupported",
+    "tests/test_encryption.py::test_v4_encryption_without_crypt_filters",
+    "tests/test_encryption.py::test_malformed_id_entry_is_ignored",
+    # Asserts exact subprocess stderr. 6.21.2 sets
+    # COVERAGE_PROCESS_START=pyproject.toml; a1_coverage.pth then writes
+    # ConfigError to stderr and the comparison fails.
+    "tests/test_utils.py::test_rename_kwargs__stacklevel",
 ]
 
 PYTEST_ARGS = [
