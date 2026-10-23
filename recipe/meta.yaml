@@ -135,6 +135,7 @@ outputs:
         - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
         - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
+        - brotli-python >=1.2.0
     test:
       commands:
         - pip check
