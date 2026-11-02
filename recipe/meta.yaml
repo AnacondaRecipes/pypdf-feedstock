@@ -58,6 +58,22 @@ outputs:
         # Anaconda package name uses underscore (arabic_reshaper-feedstock), not PyPI hyphen
         - arabic_reshaper  # [py>=310]
 
+  - name: {{ name }}-with-brotli
+    build:
+      skip: true  # [py<39]
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("pypdf", exact=True) }}
+        - brotli-python >=1.2.0
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
+
   - name: {{ name }}-with-crypto
     build:
       skip: true  # [py<39]
@@ -133,12 +149,12 @@ outputs:
         - python
       run:
         - python
+        - {{ pin_subpackage("pypdf-with-brotli", exact=True) }}
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
         - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
         - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
-        - brotli-python >=1.2.0
     test:
       commands:
         - pip check
