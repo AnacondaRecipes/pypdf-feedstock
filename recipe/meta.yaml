@@ -1,5 +1,5 @@
 {% set name = "pypdf" %}
-{% set version = "6.21.2" %}
+{% set version = "6.21.4" %}
 
 package:
   name: {{ name }}-split
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 0a3e1c5c886a1be03646c16a04827cc166c2a0575c971b26a4bf89686551c2d4
+  sha256: c8817e3f888d47a087872ded69812c1ef30cacb871d6e053e0c00bbaf0bc2163
 
 build:
   number: 0
@@ -19,6 +19,8 @@ outputs:
         # anaconda channel are failing our security scanner because they bundle encrypted (password‑protected) PDFs as test fixtures. The scanner unpacks each artifact and can't open an encrypted PDF, so it flags the whole package PASSWORD_PROTECTED and blocks it.
         # pypdf's test suite ships under info/test/resources/, including ~11 encrypted PDFs (e.g. encryption/r2-r4-*.pdf, encrypted-file.pdf).
         # python, not rm: Windows cmd has no rm, so the fixtures were still packaged on win-64.
+        # 6.21.4 added test_write__incremental__encrypted_source, which reads a deleted
+        # resources/encryption/ fixture — deselect it alongside the other encrypted-file tests.
         - python -c "import os, shutil; from pathlib import Path; r=Path(os.environ['SRC_DIR'])/'resources'; shutil.rmtree(r/'encryption', ignore_errors=True); [(r/n).unlink(missing_ok=True) for n in ('encrypted-file.pdf','encrypted_doc_no_id.pdf','libreoffice-writer-password.pdf','crazyones-encrypted-256.pdf')]"
         - python -m pip install . -vv --no-deps --no-build-isolation
       skip: true  # [py<39]
@@ -41,9 +43,10 @@ outputs:
       commands:
         - pip check
         # we need to ignore test_all.py because it is not a test file
-        - set "PYTEST_ADDOPTS=--ignore=test_all.py"  # [win]
+        # test_write__incremental__encrypted_source needs an encryption fixture we must delete (see build script)
+        - set "PYTEST_ADDOPTS=--ignore=test_all.py --deselect tests/test_writer.py::test_write__incremental__encrypted_source"  # [win]
         - python test_all.py                          # [win]
-        - PYTEST_ADDOPTS="--ignore=test_all.py" python test_all.py  # [not win]
+        - PYTEST_ADDOPTS="--ignore=test_all.py --deselect tests/test_writer.py::test_write__incremental__encrypted_source" python test_all.py  # [not win]
       requires:
         - pip
         - pytest
@@ -55,6 +58,22 @@ outputs:
         # Anaconda package name uses underscore (arabic_reshaper-feedstock), not PyPI hyphen
         - arabic_reshaper  # [py>=310]
 
+  - name: {{ name }}-with-brotli
+    build:
+      skip: true  # [py<39]
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("pypdf", exact=True) }}
+        - brotli-python >=1.2.0
+    test:
+      commands:
+        - pip check
+      requires:
+        - pip
+
   - name: {{ name }}-with-crypto
     build:
       skip: true  # [py<39]
@@ -64,7 +83,7 @@ outputs:
       run:
         - python
         - {{ pin_subpackage("pypdf", exact=True) }}
-        - cryptography >=3.0
+        - cryptography >3.0
     test:
       commands:
         - pip check
@@ -130,12 +149,12 @@ outputs:
         - python
       run:
         - python
+        - {{ pin_subpackage("pypdf-with-brotli", exact=True) }}
         - {{ pin_subpackage("pypdf-with-crypto", exact=True) }}
         - {{ pin_subpackage("pypdf-with-image", exact=True) }}
         - {{ pin_subpackage("pypdf-with-fonts", exact=True) }}
         - {{ pin_subpackage("pypdf-with-rtl-text", exact=True) }}  # [py>=310]
         - {{ pin_subpackage("pypdf", exact=True) }}
-        - brotli-python >=1.2.0
     test:
       commands:
         - pip check

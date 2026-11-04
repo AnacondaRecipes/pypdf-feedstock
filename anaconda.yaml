@@ -4,6 +4,7 @@ upstream_sources:
       identifier: pypdf
     packages:
       - pypdf
+      - pypdf-with-brotli
       - pypdf-with-crypto
       - pypdf-with-fonts
       - pypdf-with-full
